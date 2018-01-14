@@ -1,5 +1,7 @@
 package com.example.cslab.criminal;
 
+import android.content.pm.ProviderInfo;
+import android.database.CrossProcessCursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -36,19 +39,30 @@ public class CrimeListFragment extends Fragment {
          mCrimeRecyclerView.setAdapter(mAdapter);
      }
 
-            public class CrimeHolder extends RecyclerView.ViewHolder {
-                public CrimeHolder(LayoutInflater inflater, ViewGroup parent) {
-                    super(inflater.inflate(R.layout.list_item_crime, parent, false));
-                }
-            }
 
-    private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder>{
+    private class CrimeAdapter extends RecyclerView.Adapter<CrimeAdapter.CrimeHolder>{
         private List<Crime> mCrimes;
         public CrimeAdapter(List<Crime> crimes){
             mCrimes= crimes;
 
         }
+        public class CrimeHolder extends RecyclerView.ViewHolder {
+            private TextView mTitleTextView;
+            private TextView mDateTextView;
+            private Crime mCrime;
 
+            public void bind(Crime crime){
+                mCrime =crime;
+                mTitleTextView.setText(mCrime.getmTitle());
+                mDateTextView.setText(mCrime.getmDate().toString());
+            }
+
+            public CrimeHolder(LayoutInflater inflater, ViewGroup parent) {
+                super(inflater.inflate(R.layout.list_item_crime, parent, false));
+                mTitleTextView = (TextView)itemView.findViewById(R.id.crime_title);
+                mDateTextView = (TextView) itemView.findViewById(R.id.crime_date);
+            }
+        }
         @Override
         public CrimeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater= LayoutInflater.from(getActivity());
@@ -57,7 +71,8 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(CrimeHolder holder, int position) {
-
+            Crime crime= mCrimes.get(position);
+            holder.bind(crime);
         }
 
         @Override
